@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Builder HUD</title>
+  <link rel="stylesheet" href="hud.css">
+</head>
+<body>
+  <div class="hud">
+    <header class="top-bar" aria-label="Indicadores principais">
+      <ul class="top-stat-list">
+        <li class="top-stat">
+          <button class="stat-button" data-tooltip="Dinheiro disponível no caixa da cidade.">
+            <img class="stat-icon hud-icon" src="Icons/capital.svg" alt="" aria-hidden="true">
+            <span class="stat-value" data-value="money">125000</span>
+          </button>
+        </li>
+        <li class="top-stat">
+          <button class="stat-button" data-tooltip="População total ativa na cidade.">
+            <img class="stat-icon hud-icon" src="Icons/population.svg" alt="" aria-hidden="true">
+            <span class="stat-value" data-value="population">18420</span>
+          </button>
+        </li>
+        <li class="top-stat">
+          <button class="stat-button" data-tooltip="Satisfação geral dos cidadãos.">
+            <img class="stat-icon hud-icon" src="Icons/felicidade.svg" alt="" aria-hidden="true">
+            <span class="stat-value" data-value="happiness">82%</span>
+          </button>
+        </li>
+        <li class="top-stat">
+          <button class="stat-button" data-tooltip="Data atual do cenário de simulação.">
+            <img class="stat-icon hud-icon" src="Icons/date.svg" alt="" aria-hidden="true">
+            <span class="stat-value" data-value="date">12/04/2048</span>
+          </button>
+        </li>
+      </ul>
+      <div class="top-actions">
+        <button class="top-action-button" id="settings-open" data-tooltip="Configurações">
+          <img class="top-action-icon hud-icon" src="Icons/config.svg" alt="" aria-hidden="true">
+        </button>
+      </div>
+    </header>
+
+    <aside class="sidebar" aria-label="Ferramentas principais">
+      <div class="tool-item">
+        <button class="icon-button is-active" data-tool="zonas" data-tooltip="Zonas [1]" aria-pressed="true">
+          <img class="tool-icon hud-icon" src="Icons/zonas.svg" alt="" aria-hidden="true">
+          <span class="tool-hint">1</span>
+        </button>
+      </div>
+      <div class="tool-item">
+        <button class="icon-button" data-tool="estrada" data-tooltip="Estrada [2]" aria-pressed="false">
+          <span class="tool-icon" aria-hidden="true">+</span>
+          <span class="tool-hint">2</span>
+        </button>
+      </div>
+      <div class="tool-item">
+        <button class="icon-button" data-tool="energia" data-tooltip="Energia [3]" aria-pressed="false">
+          <img class="tool-icon hud-icon" src="Icons/energia.svg" alt="" aria-hidden="true">
+          <span class="tool-hint">3</span>
+        </button>
+      </div>
+      <div class="tool-item">
+        <button class="icon-button" data-tool="servicos" data-tooltip="Serviços [4]" aria-pressed="false">
+          <img class="tool-icon hud-icon" src="Icons/config.svg" alt="" aria-hidden="true">
+          <span class="tool-hint">4</span>
+        </button>
+      </div>
+      <div class="tool-item">
+        <button class="icon-button" data-tool="demolir" data-tooltip="Demolir [5]" aria-pressed="false">
+          <span class="tool-icon" aria-hidden="true">x</span>
+          <span class="tool-hint">5</span>
+        </button>
+      </div>
+    </aside>
+
+    <aside class="tool-panel panel" id="tool-panel" aria-label="Opções da ferramenta">
+      <div class="tool-panel-header">
+        <span class="tool-panel-title" id="tool-panel-title">Zonas</span>
+        <button class="tool-panel-toggle" id="tool-panel-toggle" data-tooltip="Ocultar ou mostrar painel secundário" aria-label="Ocultar ou mostrar painel secundário"><</button>
+      </div>
+      <div class="tool-panel-content" id="tool-panel-content"></div>
+    </aside>
+
+    <main class="viewport" aria-label="Área do mapa">
+      <div class="viewport-grid" aria-hidden="true"></div>
+      <div class="viewport-overlay">
+        <div class="mode-badge" data-tooltip="Ferramenta atualmente selecionada.">
+          <span>Modo</span>
+          <strong id="active-mode">Zonas</strong>
+        </div>
+      </div>
+    </main>
+
+    <aside class="panel-right panel" id="metrics-panel" aria-label="Painel de dados">
+      <div class="panel-main" id="panel-main">
+        <section class="panel-view is-active" data-panel-view="analysis">
+          <div class="panel-header">
+            <span class="panel-title panel-title-group">
+              <img class="panel-title-icon hud-icon" src="Icons/analise.svg" alt="" aria-hidden="true">
+              <span>Análise</span>
+            </span>
+          </div>
+          <div class="panel-content" id="panel-content">
+            <div class="metric-row" data-tooltip="Taxa atual de empregos preenchidos na cidade.">
+              <span class="metric-label">Empregos</span>
+              <span class="metric-value" data-metric-text="employment">74%</span>
+              <div class="metric-bar">
+                <div class="metric-fill" data-metric-fill="employment" data-level="good" style="width: 74%;"></div>
+              </div>
+            </div>
+            <div class="metric-row" data-tooltip="Cobertura de saúde disponível para a população.">
+              <span class="metric-label">Saúde</span>
+              <span class="metric-value" data-metric-text="health">68%</span>
+              <div class="metric-bar">
+                <div class="metric-fill" data-metric-fill="health" data-level="warn" style="width: 68%;"></div>
+              </div>
+            </div>
+            <div class="metric-row" data-tooltip="Acesso à educação nas zonas residenciais.">
+              <span class="metric-label">Educação</span>
+              <span class="metric-value" data-metric-text="education">81%</span>
+              <div class="metric-bar">
+                <div class="metric-fill" data-metric-fill="education" data-level="good" style="width: 81%;"></div>
+              </div>
+            </div>
+            <div class="metric-row" data-tooltip="Equilíbrio entre oferta e demanda de moradias.">
+              <span class="metric-label">Moradia</span>
+              <span class="metric-value" data-metric-text="housing">62%</span>
+              <div class="metric-bar">
+                <div class="metric-fill" data-metric-fill="housing" data-level="warn" style="width: 62%;"></div>
+              </div>
+            </div>
+            <div class="metric-row" data-tooltip="Concentração de poluição urbana agregada." data-advanced-info="true">
+              <span class="metric-label">Poluição</span>
+              <span class="metric-value" data-metric-text="pollution">42%</span>
+              <div class="metric-bar">
+                <div class="metric-fill" data-metric-fill="pollution" data-level="warn" style="width: 42%;"></div>
+              </div>
+            </div>
+            <div class="metric-row" data-tooltip="Nível de criminalidade atual na cidade." data-advanced-info="true">
+              <span class="metric-label">Crime</span>
+              <span class="metric-value" data-metric-text="crime">57%</span>
+              <div class="metric-bar">
+                <div class="metric-fill" data-metric-fill="crime" data-level="warn" style="width: 57%;"></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-view" data-panel-view="taxes">
+          <div class="panel-header">
+            <span class="panel-title panel-title-group">
+              <img class="panel-title-icon hud-icon" src="Icons/imposto.svg" alt="" aria-hidden="true">
+              <span>Impostos</span>
+            </span>
+          </div>
+          <div class="panel-content tax-panel">
+            <div class="tax-row" data-tooltip="Controla a alíquota base aplicada na cidade.">
+              <div class="tax-row-header">
+                <span class="metric-label">Impostos geral</span>
+                <span class="metric-value" id="tax-general-value">10%</span>
+              </div>
+              <input class="tax-slider" id="tax-general" type="range" min="0" max="30" value="10">
+            </div>
+            <div class="tax-row" data-tooltip="Alocação fiscal para educação.">
+              <div class="tax-row-header">
+                <span class="metric-label">Educação</span>
+                <span class="metric-value" id="tax-education-value">8%</span>
+              </div>
+              <input class="tax-slider" id="tax-education" type="range" min="0" max="20" value="8">
+            </div>
+            <div class="tax-row" data-tooltip="Alocação fiscal para estradas e manutenção.">
+              <div class="tax-row-header">
+                <span class="metric-label">Estradas</span>
+                <span class="metric-value" id="tax-roads-value">7%</span>
+              </div>
+              <input class="tax-slider" id="tax-roads" type="range" min="0" max="20" value="7">
+            </div>
+            <div class="tax-row" data-tooltip="Alocação fiscal para polícia.">
+              <div class="tax-row-header">
+                <span class="metric-label">Polícia</span>
+                <span class="metric-value" id="tax-police-value">9%</span>
+              </div>
+              <input class="tax-slider" id="tax-police" type="range" min="0" max="20" value="9">
+            </div>
+            <div class="tax-row" data-tooltip="Alocação fiscal para hospitais e saúde pública.">
+              <div class="tax-row-header">
+                <span class="metric-label">Hospital</span>
+                <span class="metric-value" id="tax-hospital-value">8%</span>
+              </div>
+              <input class="tax-slider" id="tax-hospital" type="range" min="0" max="20" value="8">
+            </div>
+            <div class="tax-row" data-tooltip="Alocação fiscal para lazer e bem-estar urbano.">
+              <div class="tax-row-header">
+                <span class="metric-label">Lazer</span>
+                <span class="metric-value" id="tax-leisure-value">6%</span>
+              </div>
+              <input class="tax-slider" id="tax-leisure" type="range" min="0" max="20" value="6">
+            </div>
+          </div>
+        </section>
+
+        <section class="panel-view" data-panel-view="evaluation">
+          <div class="panel-header">
+            <span class="panel-title panel-title-group">
+              <img class="panel-title-icon hud-icon" src="Icons/avaliação.svg" alt="" aria-hidden="true">
+              <span>Avaliação</span>
+            </span>
+          </div>
+          <div class="panel-content evaluation-panel">
+            <div class="evaluation-section">
+              <span class="metric-label">Opinião Pública</span>
+              <div class="evaluation-split-row">
+                <div class="evaluation-stat-card" data-tooltip="75% da população aprova sua gestão." id="evaluation-yes-card">
+                  <span class="evaluation-stat-label">Sim</span>
+                  <strong class="evaluation-stat-value" id="evaluation-approval-yes">75%</strong>
+                </div>
+                <div class="evaluation-stat-card" data-tooltip="25% está insatisfeita." id="evaluation-no-card">
+                  <span class="evaluation-stat-label">Não</span>
+                  <strong class="evaluation-stat-value" id="evaluation-approval-no">25%</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="evaluation-section">
+              <span class="metric-label">Piores Problemas</span>
+              <div class="evaluation-problem-list" id="evaluation-problems">
+                <span class="evaluation-chip">Impostos</span>
+                <span class="evaluation-chip">Educação</span>
+                <span class="evaluation-chip">Falta de emprego</span>
+              </div>
+            </div>
+
+            <div class="evaluation-section">
+              <span class="metric-label">Dados da Cidade</span>
+              <div class="evaluation-data-grid">
+                <div class="evaluation-data-row" data-tooltip="População total da cidade.">
+                  <span class="evaluation-data-label">População</span>
+                  <strong class="evaluation-data-value" id="evaluation-population">0</strong>
+                </div>
+                <div class="evaluation-data-row" data-tooltip="Pessoas entrando menos pessoas saindo.">
+                  <span class="evaluation-data-label">Migração líquida</span>
+                  <strong class="evaluation-data-value" id="evaluation-migration">0</strong>
+                </div>
+                <div class="evaluation-data-row" data-tooltip="Valor total estimado da cidade: infraestrutura mais construções.">
+                  <span class="evaluation-data-label">Valor total</span>
+                  <strong class="evaluation-data-value" id="evaluation-city-value">0</strong>
+                </div>
+                <div class="evaluation-data-row" data-tooltip="Classificação atual da cidade com base em população e desenvolvimento.">
+                  <span class="evaluation-data-label">Categoria</span>
+                  <strong class="evaluation-data-value" id="evaluation-category">Village</strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="evaluation-section">
+              <span class="metric-label">Classificação da Cidade</span>
+              <div class="evaluation-tier-list">
+                <div class="evaluation-tier-row">
+                  <span class="evaluation-tier-name">Village</span>
+                  <span class="evaluation-tier-range">0 – 1.000</span>
+                </div>
+                <div class="evaluation-tier-row">
+                  <span class="evaluation-tier-name">Town</span>
+                  <span class="evaluation-tier-range">1.000 – 10.000</span>
+                </div>
+                <div class="evaluation-tier-row">
+                  <span class="evaluation-tier-name">City</span>
+                  <span class="evaluation-tier-range">10.000 – 50.000</span>
+                </div>
+                <div class="evaluation-tier-row">
+                  <span class="evaluation-tier-name">Capital</span>
+                  <span class="evaluation-tier-range">50.000 – 100.000</span>
+                </div>
+                <div class="evaluation-tier-row">
+                  <span class="evaluation-tier-name">Metropolis</span>
+                  <span class="evaluation-tier-range">100.000 – 500.000</span>
+                </div>
+                <div class="evaluation-tier-row">
+                  <span class="evaluation-tier-name">Megalopolis</span>
+                  <span class="evaluation-tier-range">500.000+</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+      <div class="right-toolbar" aria-label="Ferramentas do painel">
+        <button class="panel-toggle right-tool is-active" id="panel-toggle" data-panel-tool="analysis" data-tooltip="Análise [Tab]" aria-label="Abrir ou fechar painel de análise">
+          <span class="panel-toggle-arrow" aria-hidden="true">></span>
+          <img class="panel-toggle-icon hud-icon" src="Icons/analise.svg" alt="" aria-hidden="true">
+        </button>
+        <button class="right-tool" data-panel-tool="taxes" data-tooltip="Impostos">
+          <img class="right-tool-icon hud-icon" src="Icons/imposto.svg" alt="" aria-hidden="true">
+        </button>
+        <button class="right-tool" data-panel-tool="evaluation" data-tooltip="Avaliação">
+          <img class="right-tool-icon hud-icon" src="Icons/avaliação.svg" alt="" aria-hidden="true">
+        </button>
+      </div>
+    </aside>
+
+    <button class="bottom-toggle" id="bottom-toggle" data-tooltip="Retrair ou expandir barra de tempo [Z]" aria-label="Retrair ou expandir barra de tempo">v</button>
+
+    <footer class="bottom-bar" aria-label="Controles de tempo">
+      <div class="bottom-group">
+        <ul class="time-controls">
+          <li class="time-item">
+            <button class="time-button" data-speed="pause" data-tooltip="Pausar simulação [Q]" aria-pressed="false">
+              <img class="time-icon hud-icon" src="Icons/pause.svg" alt="" aria-hidden="true">
+              <span class="time-label">Q</span>
+            </button>
+          </li>
+          <li class="time-item">
+            <button class="time-button" data-speed="slow" data-tooltip="Velocidade lenta [W]" aria-pressed="false">
+              <img class="time-icon hud-icon" src="Icons/lento.svg" alt="" aria-hidden="true">
+              <span class="time-label">W</span>
+            </button>
+          </li>
+          <li class="time-item">
+            <button class="time-button is-active" data-speed="normal" data-tooltip="Velocidade normal [E]" aria-pressed="true">
+              <img class="time-icon hud-icon" src="Icons/normal.svg" alt="" aria-hidden="true">
+              <span class="time-label">E</span>
+            </button>
+          </li>
+          <li class="time-item">
+            <button class="time-button" data-speed="fast" data-tooltip="Velocidade rápida [R]" aria-pressed="false">
+              <img class="time-icon hud-icon time-icon-fast" src="Icons/rapido.svg" alt="" aria-hidden="true">
+              <span class="time-label">R</span>
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div class="bottom-mode">
+        <div class="mode-indicator" data-tooltip="Modo atual de simulação." id="mode-indicator">NORMAL</div>
+      </div>
+    </footer>
+  </div>
+
+  <div class="settings-modal-backdrop" id="settings-backdrop" hidden>
+    <div class="settings-modal panel" id="settings-modal" role="dialog" aria-modal="true" aria-labelledby="settings-title" tabindex="-1">
+      <div class="settings-header">
+        <h2 class="settings-title" id="settings-title">Configurações</h2>
+        <button class="settings-close" id="settings-close" data-tooltip="Fechar configurações [Esc]" aria-label="Fechar configurações">x</button>
+      </div>
+
+      <div class="settings-layout">
+        <nav class="settings-sidebar" aria-label="Categorias de configurações">
+          <button class="settings-nav-item is-active" data-settings-tab="interface" data-tooltip="Interface" aria-pressed="true">
+            <img class="settings-nav-icon hud-icon" src="Icons/interface.svg" alt="" aria-hidden="true">
+          </button>
+          <button class="settings-nav-item" data-settings-tab="controls" data-tooltip="Controles" aria-pressed="false">
+            <img class="settings-nav-icon hud-icon" src="Icons/controle.svg" alt="" aria-hidden="true">
+          </button>
+          <button class="settings-nav-item" data-settings-tab="save" data-tooltip="Salvamento" aria-pressed="false">
+            <img class="settings-nav-icon hud-icon" src="Icons/save.svg" alt="" aria-hidden="true">
+          </button>
+          <button class="settings-nav-item" data-settings-tab="economy" data-tooltip="Economia" aria-pressed="false">
+            <img class="settings-nav-icon hud-icon" src="Icons/capital.svg" alt="" aria-hidden="true">
+          </button>
+          <button class="settings-nav-item" data-settings-tab="alerts" data-tooltip="Alertas" aria-pressed="false">
+            <img class="settings-nav-icon hud-icon" src="Icons/alerta.svg" alt="" aria-hidden="true">
+          </button>
+          <button class="settings-nav-item" data-settings-tab="experience" data-tooltip="Experiência" aria-pressed="false">
+            <img class="settings-nav-icon hud-icon" src="Icons/dicas.svg" alt="" aria-hidden="true">
+          </button>
+          <button class="settings-nav-item" data-settings-tab="audio" data-tooltip="Áudio" aria-pressed="false">
+            <img class="settings-nav-icon hud-icon" src="Icons/volume.svg" alt="" aria-hidden="true">
+          </button>
+        </nav>
+
+        <div class="settings-main">
+          <div class="settings-status-row">
+            <span class="settings-section-label" id="settings-section-label">Interface</span>
+            <span class="settings-save-indicator" id="settings-save-indicator">Salvo</span>
+          </div>
+
+          <section class="settings-panel is-active" data-settings-panel="interface">
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Tema</h3>
+              </div>
+              <div class="settings-option-row">
+                <label class="control-radio">
+                  <input type="radio" name="theme" value="dark" checked>
+                  <span>Escuro</span>
+                </label>
+                <label class="control-radio">
+                  <input type="radio" name="theme" value="light">
+                  <span>Claro</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Escala da UI</h3>
+              </div>
+              <label class="control-field">
+                <select id="ui-scale-select">
+                  <option value="small">Pequeno</option>
+                  <option value="medium" selected>Médio</option>
+                  <option value="large">Grande</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Estilo da interface</h3>
+              </div>
+              <div class="settings-option-row">
+                <label class="control-radio">
+                  <input type="radio" name="ui-density" value="compact" checked>
+                  <span>Compacto</span>
+                </label>
+                <label class="control-radio">
+                  <input type="radio" name="ui-density" value="spacious">
+                  <span>Espaçado</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Mostrar grade do mapa</h3>
+              </div>
+              <div class="control-toggle-row">
+                <span class="control-toggle-copy" id="map-grid-copy">Ligado</span>
+                <label class="control-toggle">
+                  <input type="checkbox" id="map-grid-toggle" checked>
+                  <span class="control-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Tooltips</h3>
+              </div>
+              <label class="control-field">
+                <select id="tooltip-level-select">
+                  <option value="off">Desligado</option>
+                  <option value="basic" selected>Básico</option>
+                  <option value="detailed">Detalhado</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Nível de informação</h3>
+              </div>
+              <div class="settings-option-row">
+                <label class="control-radio">
+                  <input type="radio" name="info-level" value="simple">
+                  <span>Simples</span>
+                </label>
+                <label class="control-radio">
+                  <input type="radio" name="info-level" value="advanced" checked>
+                  <span>Avançado</span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-panel" data-settings-panel="controls">
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Sensibilidade da câmera</h3>
+                <span class="settings-inline-value" id="camera-sensitivity-value">50</span>
+              </div>
+              <label class="control-range">
+                <input type="range" id="camera-sensitivity-range" min="0" max="100" value="50">
+              </label>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Sensibilidade do zoom</h3>
+                <span class="settings-inline-value" id="zoom-sensitivity-value">50</span>
+              </div>
+              <label class="control-range">
+                <input type="range" id="zoom-sensitivity-range" min="0" max="100" value="50">
+              </label>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Inverter zoom</h3>
+              </div>
+              <div class="control-toggle-row">
+                <span class="control-toggle-copy" id="invert-zoom-copy">Não</span>
+                <label class="control-toggle">
+                  <input type="checkbox" id="invert-zoom-toggle">
+                  <span class="control-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Movimento do mapa</h3>
+              </div>
+              <div class="settings-option-column">
+                <label class="control-radio">
+                  <input type="radio" name="map-move-mode" value="right-drag" checked>
+                  <span>Botão direito</span>
+                </label>
+                <label class="control-radio">
+                  <input type="radio" name="map-move-mode" value="space">
+                  <span>Segurar espaço</span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-panel" data-settings-panel="save">
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Autosave</h3>
+              </div>
+              <label class="control-field">
+                <select id="autosave-select">
+                  <option value="30s">30 segundos</option>
+                  <option value="1m" selected>1 minuto</option>
+                  <option value="5m">5 minutos</option>
+                  <option value="never">Nunca</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Retomar automaticamente</h3>
+              </div>
+              <div class="control-toggle-row">
+                <span class="control-toggle-copy" id="resume-last-city-copy">Sim</span>
+                <label class="control-toggle">
+                  <input type="checkbox" id="resume-last-city-toggle" checked>
+                  <span class="control-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Confirmar antes de sair sem salvar</h3>
+              </div>
+              <div class="control-toggle-row">
+                <span class="control-toggle-copy" id="confirm-exit-copy">Ligado</span>
+                <label class="control-toggle">
+                  <input type="checkbox" id="confirm-exit-toggle" checked>
+                  <span class="control-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-panel" data-settings-panel="economy">
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Recebimento de receita</h3>
+              </div>
+              <div class="settings-option-column">
+                <label class="control-radio">
+                  <input type="radio" name="revenue-mode" value="automatic" checked>
+                  <span>Automático</span>
+                </label>
+                <label class="control-radio">
+                  <input type="radio" name="revenue-mode" value="manual">
+                  <span>Manual</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Mostrar resumo financeiro mensal</h3>
+              </div>
+              <div class="control-toggle-row">
+                <span class="control-toggle-copy" id="monthly-summary-copy">Ligado</span>
+                <label class="control-toggle">
+                  <input type="checkbox" id="monthly-summary-toggle" checked>
+                  <span class="control-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Alertar prejuízo automaticamente</h3>
+              </div>
+              <div class="control-toggle-row">
+                <span class="control-toggle-copy" id="loss-alert-copy">Ligado</span>
+                <label class="control-toggle">
+                  <input type="checkbox" id="loss-alert-toggle" checked>
+                  <span class="control-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-panel" data-settings-panel="alerts">
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Alertas automáticos</h3>
+              </div>
+              <div class="settings-option-column checkbox-stack">
+                <label class="control-check">
+                  <input type="checkbox" id="alert-energy-toggle" checked>
+                  <span>Falta de energia</span>
+                </label>
+                <label class="control-check">
+                  <input type="checkbox" id="alert-unemployment-toggle" checked>
+                  <span>Desemprego</span>
+                </label>
+                <label class="control-check">
+                  <input type="checkbox" id="alert-pollution-toggle" checked>
+                  <span>Poluição alta</span>
+                </label>
+                <label class="control-check">
+                  <input type="checkbox" id="alert-crime-toggle" checked>
+                  <span>Crime alto</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Frequência dos alertas</h3>
+              </div>
+              <label class="control-field">
+                <select id="alert-frequency-select">
+                  <option value="low">Baixa</option>
+                  <option value="medium" selected>Média</option>
+                  <option value="high">Alta</option>
+                </select>
+              </label>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Mensagens explicativas</h3>
+              </div>
+              <div class="control-toggle-row">
+                <span class="control-toggle-copy" id="alert-messages-copy">Ligado</span>
+                <label class="control-toggle">
+                  <input type="checkbox" id="alert-messages-toggle" checked>
+                  <span class="control-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-panel" data-settings-panel="experience">
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Tutorial</h3>
+              </div>
+              <div class="settings-option-row">
+                <label class="control-radio">
+                  <input type="radio" name="tutorial-mode" value="on" checked>
+                  <span>Ativado</span>
+                </label>
+                <label class="control-radio">
+                  <input type="radio" name="tutorial-mode" value="off">
+                  <span>Desativado</span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Dicas automáticas</h3>
+              </div>
+              <div class="control-toggle-row">
+                <span class="control-toggle-copy" id="auto-tips-copy">Ligado</span>
+                <label class="control-toggle">
+                  <input type="checkbox" id="auto-tips-toggle" checked>
+                  <span class="control-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Assistência inteligente</h3>
+              </div>
+              <div class="control-toggle-row">
+                <span class="control-toggle-copy" id="smart-assist-copy">Ligado</span>
+                <label class="control-toggle">
+                  <input type="checkbox" id="smart-assist-toggle" checked>
+                  <span class="control-toggle-track"></span>
+                </label>
+              </div>
+            </div>
+          </section>
+
+          <section class="settings-panel" data-settings-panel="audio">
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Volume geral</h3>
+                <span class="settings-inline-value" id="master-volume-value">80</span>
+              </div>
+              <label class="control-range">
+                <input type="range" id="master-volume-range" min="0" max="100" value="80">
+              </label>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Música</h3>
+                <span class="settings-inline-value" id="music-volume-value">70</span>
+              </div>
+              <label class="control-range">
+                <input type="range" id="music-volume-range" min="0" max="100" value="70">
+              </label>
+            </div>
+
+            <div class="settings-group">
+              <div class="settings-group-header">
+                <h3 class="settings-group-title">Efeitos</h3>
+                <span class="settings-inline-value" id="effects-volume-value">75</span>
+              </div>
+              <label class="control-range">
+                <input type="range" id="effects-volume-range" min="0" max="100" value="75">
+              </label>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tooltip" id="tooltip" role="tooltip" aria-hidden="true"></div>
+
+  <script src="hud.js"></script>
+</body>
+</html>
