@@ -2334,9 +2334,11 @@
                             return null;
                         };
                         const getIndustrialTextureForLevel = (level) => {
+                            // devLevel vai de 0..IND_LEVELS_MAX (IND_LEVELS_MAX=4).
+                            // Mapeia para 3 estágios visuais: 1 (0-1), 2 (2-3), 3 (4).
                             if (level >= 4 && industrial3Ready) return industrialTexture3;
-                            if (level >= 4 && industrial2Ready) return industrialTexture2;
-                            if (level >= 3 && industrial2Ready) return industrialTexture2;
+                            if (level >= 4 && industrial2Ready) return industrialTexture2; // fallback caso a 3 não esteja pronta
+                            if (level >= 2 && industrial2Ready) return industrialTexture2;
                             if (level >= 1 && industrial1Ready) return industrialTexture1;
                             return null;
                         };
