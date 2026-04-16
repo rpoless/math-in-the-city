@@ -223,6 +223,13 @@
                         </span>
                         <span class="tool-option-key">$500</span>
                     </button>
+                    <button class="tool-option hud-build-button" id="btnFireStation" type="button" data-build-group="services" data-tooltip="Posto de bombeiros ($500)">
+                        <span class="tool-option-main">
+                            <img class="tool-option-icon hud-icon" src="./src/assets/bombeiro.png" alt="" aria-hidden="true">
+                            <span class="tool-option-label">Bombeiros</span>
+                        </span>
+                        <span class="tool-option-key">$500</span>
+                    </button>
                     <button class="tool-option hud-build-button" id="btnSchool" type="button" data-build-group="services" data-tooltip="Escola ($1000)">
                         <span class="tool-option-main">
                             <img class="tool-option-icon hud-icon" src="./src/constuções-icons/escola.svg" alt="" aria-hidden="true">
@@ -333,6 +340,13 @@
                                 <span class="metric-value" data-metric-text="crime">0%</span>
                                 <div class="metric-bar">
                                     <div class="metric-fill" data-metric-fill="crime" data-level="warn" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                            <div class="metric-row" data-advanced-info="true">
+                                <span class="metric-label">Incendio</span>
+                                <span class="metric-value" data-metric-text="fire">0%</span>
+                                <div class="metric-bar">
+                                    <div class="metric-fill" data-metric-fill="fire" data-level="warn" style="width: 0%;"></div>
                                 </div>
                             </div>
                         </div>
@@ -655,6 +669,7 @@
                                 <label class="control-check"><input type="checkbox" id="alert-unemployment-toggle" checked><span>Desemprego</span></label>
                                 <label class="control-check"><input type="checkbox" id="alert-pollution-toggle" checked><span>Poluicao alta</span></label>
                                 <label class="control-check"><input type="checkbox" id="alert-crime-toggle" checked><span>Crime alto</span></label>
+                                <label class="control-check"><input type="checkbox" id="alert-fire-toggle" checked><span>Incendio</span></label>
                             </div>
                         </div>
                         <div class="settings-group">
@@ -763,6 +778,10 @@
                     <span class="zone-info-value" id="zonePollutionValue">ND</span>
                 </div>
                 <div class="zone-info-row">
+                    <span>Incendio</span>
+                    <span class="zone-info-value" id="zoneFireValue">ND</span>
+                </div>
+                <div class="zone-info-row">
                     <span>Crescimento</span>
                     <span class="zone-info-value" id="zoneGrowthValue">ND</span>
                 </div>
@@ -840,6 +859,7 @@
                 const btnZoneIndustrial = document.getElementById('btnZoneIndustrial');
                 const btnHospitalSmall = document.getElementById('btnHospitalSmall');
                 const btnPoliceStation = document.getElementById('btnPoliceStation');
+                const btnFireStation = document.getElementById('btnFireStation');
                 const btnSchool = document.getElementById('btnSchool');
                 const btnNuclearPlant = document.getElementById('btnNuclearPlant');
                 const btnPark = document.getElementById('btnPark');
@@ -907,6 +927,7 @@
                 const zoneValueValue = document.getElementById('zoneValueValue');
                 const zoneCrimeValue = document.getElementById('zoneCrimeValue');
                 const zonePollutionValue = document.getElementById('zonePollutionValue');
+                const zoneFireValue = document.getElementById('zoneFireValue');
                 const zoneGrowthValue = document.getElementById('zoneGrowthValue');
                 const ratingModal = document.getElementById('ratingModal');
                 const ratingCloseBtn = document.getElementById('ratingCloseBtn');
@@ -961,6 +982,7 @@
                 const alertUnemploymentToggle = document.getElementById('alert-unemployment-toggle');
                 const alertPollutionToggle = document.getElementById('alert-pollution-toggle');
                 const alertCrimeToggle = document.getElementById('alert-crime-toggle');
+                const alertFireToggle = document.getElementById('alert-fire-toggle');
                 const alertFrequencySelect = document.getElementById('alert-frequency-select');
                 const alertMessagesToggle = document.getElementById('alert-messages-toggle');
                 const alertMessagesCopy = document.getElementById('alert-messages-copy');
@@ -982,6 +1004,7 @@
                     btnZoneIndustrial,
                     btnHospitalSmall,
                     btnPoliceStation,
+                    btnFireStation,
                     btnSchool,
                     btnNuclearPlant,
                     btnPark,
@@ -1181,6 +1204,7 @@
                     industrial: 100,
                     hospital_small: 600,
                     police_station: 500,
+                    fire_station: 500,
                     school: 1000,
                     nuclear_plant: 3000,
                     park: 800,
@@ -1258,6 +1282,8 @@
                 const parkTexture = new Image();
                 const schoolTexture = new Image();
                 const hospitalTexture = new Image();
+                const policeTexture = new Image();
+                const fireTexture = new Image();
                 const nuclearTexture = new Image();
                 let roadTexturesReady = false;
                 let roadBaseReady = false;
@@ -1287,6 +1313,8 @@
                 let parkReady = false;
                 let schoolReady = false;
                 let hospitalReady = false;
+                let policeReady = false;
+                let fireReady = false;
                 let nuclearReady = false;
                 let bridgeReady = false;
                 let bridgeTurnReady = false;
@@ -1387,6 +1415,7 @@
                     alertUnemployment: true,
                     alertPollution: true,
                     alertCrime: true,
+                    alertFire: true,
                     alertFrequency: 'medium',
                     alertMessages: true,
                     tutorialMode: 'on',
@@ -1572,6 +1601,7 @@
                     onAlertUnemploymentChange() {},
                     onAlertPollutionChange() {},
                     onAlertCrimeChange() {},
+                    onAlertFireChange() {},
                     onAlertFrequencyChange(value) {
                         document.body.dataset.alertFrequency = value;
                     },
@@ -1625,6 +1655,7 @@
                         alertUnemployment: 'onAlertUnemploymentChange',
                         alertPollution: 'onAlertPollutionChange',
                         alertCrime: 'onAlertCrimeChange',
+                        alertFire: 'onAlertFireChange',
                         alertFrequency: 'onAlertFrequencyChange',
                         alertMessages: 'onAlertMessagesChange',
                         tutorialMode: 'onTutorialModeChange',
@@ -1670,6 +1701,7 @@
                     if (alertUnemploymentToggle) alertUnemploymentToggle.checked = settings.alertUnemployment;
                     if (alertPollutionToggle) alertPollutionToggle.checked = settings.alertPollution;
                     if (alertCrimeToggle) alertCrimeToggle.checked = settings.alertCrime;
+                    if (alertFireToggle) alertFireToggle.checked = settings.alertFire;
                     if (alertFrequencySelect) alertFrequencySelect.value = settings.alertFrequency;
                     if (alertMessagesToggle) alertMessagesToggle.checked = settings.alertMessages;
                     document.querySelectorAll('input[name="tutorial-mode"]').forEach((input) => {
@@ -1877,7 +1909,10 @@
 
                 function loadImageWithFallback(img, primarySrc, fallbackSrc, onReady) {
                     let triedFallback = false;
-                    img.onload = onReady;
+                    img.onload = () => {
+                        img._loadedSrc = img.src;
+                        onReady();
+                    };
                     img.onerror = () => {
                         if (triedFallback || !fallbackSrc) return;
                         triedFallback = true;
@@ -2351,6 +2386,7 @@
                             if (b.type === 'industrial') ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--zone-ind');
                             if (b.type === 'hospital_small') ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--hospital');
                             if (b.type === 'police_station') ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--police');
+                            if (b.type === 'fire_station') ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--fire');
                             if (b.type === 'school') ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--school');
                             if (b.type === 'nuclear_plant') ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--nuclear');
                             if (b.type === 'park') ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--park');
@@ -2430,8 +2466,65 @@
                                 drawBuildingTextureExact(hospitalTexture, px, py, w, h);
                             } else if (b.type === 'school' && schoolReady && size === 4) {
                                 drawBuildingTextureExact(schoolTexture, px, py, w, h);
-                                } else if (isNuclearTextured) {
-                                    drawBuildingTextureExact(nuclearTexture, px, py, w, h);
+                            } else if (b.type === 'police_station' && policeReady && size === 3) {
+                                // O sprite "police.png" veio com rua na borda; desenha com crop para "dar zoom" e remover a rua.
+                                const loadedSrc = (policeTexture && typeof policeTexture._loadedSrc === 'string') ? policeTexture._loadedSrc : '';
+                                if (loadedSrc.includes('police.png')) {
+                                    const iw = policeTexture.naturalWidth || policeTexture.width || 0;
+                                    const ih = policeTexture.naturalHeight || policeTexture.height || 0;
+                                    const side = Math.min(iw, ih);
+                                    const inset = Math.max(0, Math.round(side * 0.14));
+                                    const cropSide = Math.max(1, side - inset * 2);
+                                    const sx = Math.round((iw - side) / 2) + inset;
+                                    const sy = Math.round((ih - side) / 2) + inset;
+                                    ctx.save();
+                                    ctx.imageSmoothingEnabled = false;
+                                    ctx.drawImage(policeTexture, sx, sy, cropSide, cropSide, px, py, w, h);
+                                    ctx.restore();
+                                } else {
+                                    drawBuildingTextureExact(policeTexture, px, py, w, h);
+                                }
+                            } else if (b.type === 'fire_station' && fireReady && size === 3) {
+                                // O sprite "bombeiro.png" veio com rua na borda; desenha com crop para "dar zoom" e remover a rua.
+                                const loadedSrc = (fireTexture && typeof fireTexture._loadedSrc === 'string') ? fireTexture._loadedSrc : '';
+                                if (loadedSrc.includes('bombeiro.png')) {
+                                    const iw = fireTexture.naturalWidth || fireTexture.width || 0;
+                                    const ih = fireTexture.naturalHeight || fireTexture.height || 0;
+                                    const side = Math.min(iw, ih);
+                                    // Menor inset = menos "zoom". Primeiro centraliza (crop no centro), depois aplica pequenos ajustes.
+                                    const inset = Math.max(0, Math.round(side * 0.082));
+                                    const cropSide = Math.max(1, side - inset * 2);
+                                    const biasX = Math.round(side * 0.006);
+                                    const biasY = Math.round(side * -0.01);
+                                    let sx = Math.round((iw - cropSide) / 2) + biasX;
+                                    let sy = Math.round((ih - cropSide) / 2) + biasY;
+                                    sx = Math.max(0, Math.min(iw - cropSide, sx));
+                                    sy = Math.max(0, Math.min(ih - cropSide, sy));
+                                    ctx.save();
+                                    ctx.imageSmoothingEnabled = false;
+                                    ctx.drawImage(fireTexture, sx, sy, cropSide, cropSide, px, py, w, h);
+                                    ctx.restore();
+                                } else {
+                                    drawBuildingTextureExact(fireTexture, px, py, w, h);
+                                }
+                            } else if (isNuclearTextured) {
+                                    // O sprite "nuclear.png" veio com rua na borda; desenha com crop para "dar zoom" e remover a rua.
+                                    const loadedSrc = (nuclearTexture && typeof nuclearTexture._loadedSrc === 'string') ? nuclearTexture._loadedSrc : '';
+                                    if (loadedSrc.includes('nuclear.png')) {
+                                        const iw = nuclearTexture.naturalWidth || nuclearTexture.width || 0;
+                                        const ih = nuclearTexture.naturalHeight || nuclearTexture.height || 0;
+                                        const side = Math.min(iw, ih);
+                                        const inset = Math.max(0, Math.round(side * 0.14));
+                                        const cropSide = Math.max(1, side - inset * 2);
+                                        const sx = Math.round((iw - side) / 2) + inset;
+                                        const sy = Math.round((ih - side) / 2) + inset;
+                                        ctx.save();
+                                        ctx.imageSmoothingEnabled = false;
+                                        ctx.drawImage(nuclearTexture, sx, sy, cropSide, cropSide, px, py, w, h);
+                                        ctx.restore();
+                                    } else {
+                                        drawBuildingTextureExact(nuclearTexture, px, py, w, h);
+                                    }
                                 } else if (b.type === 'tree' && treeReady && size === 1) {
                                     drawBuildingTextureExact(treeCanvas, px, py, w, h);
                                 } else if (isParkTextured) {
@@ -2507,6 +2600,7 @@
                         if (selectedBuildType === 'industrial') previewColor = 'rgba(245, 200, 75, 0.45)';
                         if (selectedBuildType === 'hospital_small') previewColor = 'rgba(217, 75, 75, 0.45)';
                         if (selectedBuildType === 'police_station') previewColor = 'rgba(29, 45, 90, 0.5)';
+                        if (selectedBuildType === 'fire_station') previewColor = 'rgba(217, 75, 75, 0.5)';
                         if (selectedBuildType === 'school') previewColor = 'rgba(226, 200, 90, 0.5)';
                         if (selectedBuildType === 'nuclear_plant') previewColor = 'rgba(245, 209, 75, 0.5)';
                         if (selectedBuildType === 'park') previewColor = 'rgba(184, 241, 184, 0.6)';
@@ -2515,10 +2609,25 @@
                         if (selectedBuildType === 'bulldozer') previewColor = 'rgba(255, 255, 255, 0.25)';
                         if (selectedBuildType === 'road') previewColor = 'rgba(123, 127, 134, 0.55)';
                         if (selectedBuildType === 'avenue') previewColor = 'rgba(123, 127, 134, 0.55)';
+
+                        const drawEmptyLotPreview = (x, y, wTiles, hTiles) => {
+                            if (!emptyBuildingReady) return;
+                            const px = x * baseTileSize;
+                            const py = y * baseTileSize;
+                            const wPx = wTiles * baseTileSize + 1;
+                            const hPx = hTiles * baseTileSize + 1;
+                            ctx.save();
+                            ctx.imageSmoothingEnabled = false;
+                            ctx.globalAlpha = 0.32;
+                            ctx.drawImage(emptyBuildingTexture, px, py, wPx, hPx);
+                            ctx.restore();
+                        };
+
                         if (selectedBuildType === 'avenue' && hoverBuildPos) {
                             const dir = hoverBuildPos.dir || getRoadDir(lastAvenuePos, hoverBuildPos);
                             const { w, h } = getAvenueFootprint(dir);
                             const fillColor = hoverBuildValid ? previewColor : 'rgba(255, 60, 60, 0.5)';
+                            drawEmptyLotPreview(hoverBuildPos.x, hoverBuildPos.y, w, h);
                             ctx.fillStyle = fillColor;
                             ctx.fillRect(
                                 hoverBuildPos.x * baseTileSize,
@@ -2538,6 +2647,7 @@
                         }
                         const size = getBuildSize(selectedBuildType);
                         const fillColor = hoverBuildValid ? previewColor : 'rgba(255, 60, 60, 0.5)';
+                        drawEmptyLotPreview(hoverBuildPos.x, hoverBuildPos.y, size, size);
                         ctx.fillStyle = fillColor;
                         ctx.fillRect(
                             hoverBuildPos.x * baseTileSize,
@@ -2599,6 +2709,7 @@
                     if (type === 'zone_info') return 1;
                     if (type === 'hospital_small') return 4;
                     if (type === 'police_station') return 3;
+                    if (type === 'fire_station') return 3;
                     if (type === 'school') return 4;
                     if (type === 'nuclear_plant') return 4;
                     if (type === 'park') return 3;
@@ -3131,7 +3242,7 @@
                         building.zone = {
                             type: ['residential', 'commercial', 'industrial'].includes(building.type)
                                 ? building.type
-                                : ['hospital_small', 'police_station', 'school', 'nuclear_plant', 'park', 'tree'].includes(building.type)
+                                : ['hospital_small', 'police_station', 'fire_station', 'school', 'nuclear_plant', 'park', 'tree'].includes(building.type)
                                     ? 'public'
                                     : null,
                             densityLevel: 1,
@@ -3145,13 +3256,20 @@
                             landValueScore: 0,
                             crimeScore: 0,
                             pollutionScore: 0,
+                            fireScore: 0,
                             growthScore: 0,
                             density: 'Baixo',
                             landValue: 'Classe media',
                             crime: 'Seguro',
                             pollution: 'Nenhum',
+                            fire: 'Nenhum',
                             growth: 'Estavel'
                         };
+                    } else {
+                        if (typeof building.zone.fireScore !== 'number') building.zone.fireScore = 0;
+                        if (typeof building.zone.fire !== 'string') building.zone.fire = fireLabel(building.zone.fireScore);
+                        if (typeof building.zone.devLevel !== 'number') building.zone.devLevel = 0;
+                        if (typeof building.zone.resLevel !== 'number') building.zone.resLevel = 0;
                     }
                 }
 
@@ -3172,7 +3290,7 @@
                         if (b.type === 'commercial') near.commercial += 1;
                         if (b.type === 'industrial') near.industrial += 1;
                         if (b.type === 'residential') near.residential += 1;
-                        if (['hospital_small', 'police_station', 'school', 'nuclear_plant', 'park', 'tree'].includes(b.type)) near.public += 1;
+                        if (['hospital_small', 'police_station', 'fire_station', 'school', 'nuclear_plant', 'park', 'tree'].includes(b.type)) near.public += 1;
                     });
                     return near;
                 }
@@ -3363,6 +3481,12 @@
                     return 'Alto';
                 }
 
+                function fireLabel(score) {
+                    if (score <= 0) return 'Nenhum';
+                    if (score <= 4) return 'Baixo';
+                    return 'Alto';
+                }
+
                 function growthLabel(score) {
                     if (score >= 6) return 'Auge';
                     if (score > 0) return 'Crescendo';
@@ -3445,6 +3569,9 @@
                         if (isShortCensus) {
                             zone.pollutionScore = Math.max(0, zone.pollutionScore + (near.industrial > 1 ? 3 : 0) - (near.public > 0 ? 1 : 0));
                             zone.crimeScore = Math.max(0, zone.crimeScore + (near.public > 0 ? -2 : 0) + (near.industrial > 1 ? 1 : 0));
+                            // Risco de incendio: piora com industria e densidade, melhora com presenca de servicos publicos.
+                            const densityPenalty = zone.densityLevel >= 3 ? 1 : 0;
+                            zone.fireScore = Math.max(0, (zone.fireScore || 0) + (near.industrial > 1 ? 1 : 0) + densityPenalty - (near.public > 0 ? 1 : 0));
                         }
 
 	                        if (isLongCensus) {
@@ -3454,6 +3581,7 @@
 	                            zone.densityScore = approachZero(zone.densityScore || 0, 1);
 	                            zone.pollutionScore = Math.max(0, (zone.pollutionScore || 0) - 1);
 	                            zone.crimeScore = Math.max(0, (zone.crimeScore || 0) - 1);
+	                            zone.fireScore = Math.max(0, (zone.fireScore || 0) - 1);
 
 	                            zone.landValueScore += (near.commercial > 2 ? 2 : 0);
 	                            zone.growthScore += (near.commercial > 2 ? 2 : 0);
@@ -3498,6 +3626,12 @@
                                 const dy = Math.abs((p.y + (p.size || defaultBuildSize) / 2) - (b.y + (b.size || defaultBuildSize) / 2));
                                 return dx <= 15 && dy <= 15;
                             });
+                            const fireInfluence = gameState.buildings.some((p) => {
+                                if (p.type !== 'fire_station') return false;
+                                const dx = Math.abs((p.x + (p.size || defaultBuildSize) / 2) - (b.x + (b.size || defaultBuildSize) / 2));
+                                const dy = Math.abs((p.y + (p.size || defaultBuildSize) / 2) - (b.y + (b.size || defaultBuildSize) / 2));
+                                return dx <= 15 && dy <= 15;
+                            });
                             if (parkInfluence) {
                                 zone.pollutionScore = Math.max(0, zone.pollutionScore - 6);
                                 zone.growthScore += 2;
@@ -3512,6 +3646,16 @@
 	                                zone.crimeScore = Math.max(0, zone.crimeScore - 6);
 	                                zone.growthScore += 1;
 	                            }
+	                            if (fireInfluence) {
+	                                zone.fireScore = Math.max(0, (zone.fireScore || 0) - 6);
+	                                zone.growthScore += 1;
+	                            }
+
+                                // Risco alto de incendio prejudica valor do solo e crescimento
+                                if ((zone.fireScore || 0) > 6) {
+                                    zone.landValueScore -= 2;
+                                    zone.growthScore -= 1;
+                                }
 
 	                            if (!isPowered && ['residential', 'commercial', 'industrial'].includes(zone.type)) {
 	                                zone.growthScore -= 2;
@@ -3551,6 +3695,7 @@
 	                            zone.densityScore = clampNumber(zone.densityScore || 0, 0, 12);
 	                            zone.pollutionScore = clampNumber(zone.pollutionScore || 0, 0, 12);
 	                            zone.crimeScore = clampNumber(zone.crimeScore || 0, 0, 12);
+	                            zone.fireScore = clampNumber(zone.fireScore || 0, 0, 12);
 	                        }
 
                         if (isLongCensus) {
@@ -3606,6 +3751,7 @@
                         zone.landValue = landValueLabel(zone.landValueScore);
                         zone.crime = crimeLabel(zone.crimeScore);
                         zone.pollution = pollutionLabel(zone.pollutionScore);
+                        zone.fire = fireLabel(zone.fireScore);
                         zone.growth = growthLabel(zone.growthScore);
 
                         if (zone.type === 'residential') {
@@ -3722,6 +3868,7 @@
                     const hasUnemploymentIssue = availableJobs < workforce;
                     const hasPollutionIssue = calculateAveragePollution() > 5;
                     const hasCrimeIssue = calculateAverageCrime() > 5;
+                    const hasFireIssue = calculateAverageFire() > 5;
 
                     const alerts = [];
                     if (settings.alertEnergy && hasEnergyIssue) {
@@ -3735,6 +3882,9 @@
                     }
                     if (settings.alertCrime && hasCrimeIssue) {
                         alerts.push(settings.alertMessages ? 'Alerta: criminalidade em crescimento.' : 'Crime alto');
+                    }
+                    if (settings.alertFire && hasFireIssue) {
+                        alerts.push(settings.alertMessages ? 'Alerta: risco de incendio elevado em zonas urbanas.' : 'Incendio alto');
                     }
 
                     if (!alerts.length) return;
@@ -3763,6 +3913,7 @@
                     const housing = housingCapacity > 0 ? Math.min(100, Math.round((gameState.population / housingCapacity) * 100)) : 0;
                     const pollution = Math.min(100, Math.round(calculateAveragePollution() * 10));
                     const crime = Math.min(100, Math.round(calculateAverageCrime() * 10));
+                    const fire = Math.min(100, Math.round(calculateAverageFire() * 10));
 
                     setMetricValue('employment', employment);
                     setMetricValue('health', 100 - Math.min(100, health), true);
@@ -3770,6 +3921,7 @@
                     setMetricValue('housing', housing);
                     setMetricValue('pollution', pollution, true);
                     setMetricValue('crime', crime, true);
+                    setMetricValue('fire', fire, true);
 
                     const approvalYes = document.getElementById('evaluation-approval-yes');
                     const approvalNo = document.getElementById('evaluation-approval-no');
@@ -3825,6 +3977,19 @@
                     gameState.buildings.forEach((b) => {
                         if (b.zone) {
                             sum += b.zone.crimeScore || 0;
+                            count += 1;
+                        }
+                    });
+                    return count > 0 ? sum / count : 0;
+                }
+
+                function calculateAverageFire() {
+                    if (!Array.isArray(gameState.buildings) || gameState.buildings.length === 0) return 0;
+                    let sum = 0;
+                    let count = 0;
+                    gameState.buildings.forEach((b) => {
+                        if (b.zone) {
+                            sum += b.zone.fireScore || 0;
                             count += 1;
                         }
                     });
@@ -3897,13 +4062,19 @@
 	                        complaints.push('Muita poluicao');
 	                    }
 
-                    const crimeLevel = calculateAverageCrime();
-                    if (crimeLevel > 5) {
-                        happiness -= 10;
-                        complaints.push('Alta criminalidade');
+                        const fireLevel = calculateAverageFire();
+                        if (fireLevel > 5) {
+                            happiness -= 8;
+                            complaints.push('Risco de incendio');
+                        }
+
+                     const crimeLevel = calculateAverageCrime();
+                     if (crimeLevel > 5) {
+                         happiness -= 10;
+                         complaints.push('Alta criminalidade');
                     }
 
-                    const publicServices = gameState.buildings.filter((b) => ['hospital_small', 'police_station', 'school', 'park'].includes(b.type)).length;
+                    const publicServices = gameState.buildings.filter((b) => ['hospital_small', 'police_station', 'fire_station', 'school', 'park'].includes(b.type)).length;
                     const idealServices = Math.max(1, Math.ceil(gameState.population / 200));
                     if (publicServices < idealServices) {
                         happiness -= 10;
@@ -3984,7 +4155,7 @@
                     if (type === 'residential') return 'Residencial';
                     if (type === 'commercial') return 'Comercial';
                     if (type === 'industrial') return 'Industrial';
-                    if (['hospital_small', 'police_station', 'school', 'nuclear_plant', 'park'].includes(type)) return 'Prefeitura';
+                    if (['hospital_small', 'police_station', 'fire_station', 'school', 'nuclear_plant', 'park'].includes(type)) return 'Prefeitura';
                     return 'ND';
                 }
 
@@ -3995,11 +4166,12 @@
                             occupancy: '0',
                             density: 'ND',
                             value: 'ND',
-                            crime: 'ND',
-                            pollution: 'ND',
-                            growth: 'ND'
-                        };
-                    }
+                                crime: 'ND',
+                                pollution: 'ND',
+                                fire: 'ND',
+                                growth: 'ND'
+                            };
+                        }
 
                     if (building.zone) {
                         return {
@@ -4009,6 +4181,7 @@
                             value: building.zone.landValue || 'ND',
                             crime: building.zone.crime || 'ND',
                             pollution: building.zone.pollution || 'ND',
+                            fire: building.zone.fire || 'ND',
                             growth: building.zone.growth || 'ND'
                         };
                     }
@@ -4025,9 +4198,11 @@
 
                     let crime = 'Seguro';
                     let pollution = 'Baixo';
+                    let fire = 'Baixo';
                     if (building.type === 'industrial') {
                         pollution = 'Alto';
                         crime = 'Perigoso';
+                        fire = 'Alto';
                     }
                     if (building.type === 'nuclear_plant') {
                         pollution = 'Alto';
@@ -4040,6 +4215,7 @@
 	                        value,
 	                        crime,
 	                        pollution,
+	                        fire,
 	                        growth: 'Crescendo'
 	                    };
 	                }
@@ -4060,6 +4236,7 @@
 	                    zoneValueValue.textContent = info.value;
 	                    zoneCrimeValue.textContent = info.crime;
 	                    zonePollutionValue.textContent = info.pollution;
+	                    zoneFireValue.textContent = info.fire;
 	                    zoneGrowthValue.textContent = info.growth;
 	                }
 
@@ -4072,6 +4249,7 @@
                     zoneValueValue.textContent = info.value;
                     zoneCrimeValue.textContent = info.crime;
                     zonePollutionValue.textContent = info.pollution;
+                    zoneFireValue.textContent = info.fire;
                     zoneGrowthValue.textContent = info.growth;
 	                    zoneModal.classList.add('open');
 	                    zoneModal.setAttribute('aria-hidden', 'false');
@@ -4330,6 +4508,26 @@
                     renderGameMap();
                 };
                 schoolTexture.src = 'src/assets/escola.png';
+
+                loadImageWithFallback(
+                    policeTexture,
+                    'src/assets/police.png',
+                    null,
+                    () => {
+                        policeReady = true;
+                        renderGameMap();
+                    }
+                );
+
+                loadImageWithFallback(
+                    fireTexture,
+                    'src/assets/bombeiro.png',
+                    null,
+                    () => {
+                        fireReady = true;
+                        renderGameMap();
+                    }
+                );
 
                 loadImageWithFallback(
                     nuclearTexture,
@@ -5899,7 +6097,7 @@
                             zone: {
                                 type: ['residential', 'commercial', 'industrial'].includes(selectedBuildType)
                                     ? selectedBuildType
-                                    : ['hospital_small', 'police_station', 'school', 'nuclear_plant', 'park', 'tree'].includes(selectedBuildType)
+                                    : ['hospital_small', 'police_station', 'fire_station', 'school', 'nuclear_plant', 'park', 'tree'].includes(selectedBuildType)
                                         ? 'public'
                                         : null,
                                 densityLevel: 1,
@@ -5907,15 +6105,19 @@
                                 population: 0,
                                 maxCapacity: 0,
                                 jobs: 0,
+                                devLevel: 0,
+                                resLevel: 0,
                                 densityScore: 0,
                                 landValueScore: 0,
                                 crimeScore: 0,
                                 pollutionScore: 0,
+                                fireScore: 0,
                                 growthScore: 0,
                                 density: 'Baixo',
                                 landValue: 'Classe media',
                                 crime: 'Seguro',
                                 pollution: 'Nenhum',
+                                fire: 'Nenhum',
                                 growth: 'Estavel'
                             }
                         });
@@ -6241,6 +6443,13 @@
                     showToast('Delegacia selecionada');
                 });
 
+                if (btnFireStation) {
+                    btnFireStation.addEventListener('click', () => {
+                        setSelectedBuild('fire_station', btnFireStation);
+                        showToast('Posto de bombeiros selecionado');
+                    });
+                }
+
                 btnSchool.addEventListener('click', () => {
                     setSelectedBuild('school', btnSchool);
                     showToast('Escola selecionada');
@@ -6463,6 +6672,9 @@
                 }
                 if (alertCrimeToggle) {
                     alertCrimeToggle.addEventListener('change', () => updateSetting('alertCrime', alertCrimeToggle.checked, 'onAlertCrimeChange'));
+                }
+                if (alertFireToggle) {
+                    alertFireToggle.addEventListener('change', () => updateSetting('alertFire', alertFireToggle.checked, 'onAlertFireChange'));
                 }
                 if (alertFrequencySelect) {
                     alertFrequencySelect.addEventListener('change', () => updateSetting('alertFrequency', alertFrequencySelect.value, 'onAlertFrequencyChange'));
