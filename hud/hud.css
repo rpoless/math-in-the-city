@@ -11,7 +11,7 @@
   --bad: #ef4444;
   --bar-top: 38px;
   --sidebar-width: 64px;
-  --tool-panel-width: 168px;
+  --tool-panel-width: 240px;
   --panel-width: 236px;
   --bottom-bar: 52px;
   --font-ui: "San Francisco", -apple-system, "Segoe UI", sans-serif;
@@ -242,6 +242,10 @@ button:focus-visible,
   object-fit: contain;
 }
 
+.hud-icon.is-colored {
+  filter: none;
+}
+
 .stat-value {
   letter-spacing: 0.02em;
   white-space: nowrap;
@@ -357,9 +361,9 @@ button:focus-visible,
 }
 
 .tool-option-icon {
-  width: 15px;
-  height: 15px;
-  flex: 0 0 15px;
+  width: 72px;
+  height: 72px;
+  flex: 0 0 72px;
 }
 
 .tool-option-icon-frame {

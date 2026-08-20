@@ -1530,7 +1530,7 @@
             position: absolute;
             inset: 0;
             display: grid;
-            grid-template-columns: 64px 188px minmax(0, 1fr) 260px;
+            grid-template-columns: 64px 240px minmax(0, 1fr) 260px;
             grid-template-rows: 42px minmax(0, 1fr) 54px;
             grid-template-areas:
                 "top top top top"
@@ -1546,7 +1546,7 @@
         }
 
         .hud-shell.panel-collapsed {
-            grid-template-columns: 64px 188px minmax(0, 1fr) 0;
+            grid-template-columns: 64px 240px minmax(0, 1fr) 0;
         }
 
         .hud-shell.toolpanel-collapsed.panel-collapsed {
@@ -1806,6 +1806,12 @@
             align-items: center;
             gap: 10px;
             min-width: 0;
+        }
+
+        .tool-option-icon {
+            width: 72px;
+            height: 72px;
+            flex: 0 0 72px;
         }
 
         .tool-option-label {
