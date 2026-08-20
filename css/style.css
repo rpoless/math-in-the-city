@@ -43,6 +43,12 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            cursor: url("../src/cursors/cursor.png") 0 0, auto;
+        }
+
+        body.is-space-pan,
+        body.is-space-pan * {
+            cursor: url("../src/cursors/hand cursor.png") 0 0, grab !important;
         }
 
         /* ====== Fundo tematico ====== */
@@ -142,7 +148,7 @@
             padding: 0.95rem 1.2rem;
             font-size: 1.05rem;
             letter-spacing: 0.12em;
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
             transition: all 0.25s ease;
             box-shadow: none;
             min-height: 54px;
@@ -243,7 +249,7 @@
             background: transparent;
             color: var(--text-strong);
             padding: 0.5rem 0.75rem;
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
             font-size: 0.85rem;
             letter-spacing: 1px;
         }
@@ -271,7 +277,7 @@
             border-radius: 14px;
             background: rgba(0, 0, 0, 0.12);
             border: 1px solid var(--panel-edge);
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
             transition: all 0.2s ease;
         }
 
@@ -301,7 +307,7 @@
             color: var(--text-strong);
             border-radius: 10px;
             padding: 0.1rem 0.45rem;
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
             font-size: 1rem;
             line-height: 1;
         }
@@ -341,7 +347,7 @@
             text-align: left;
             padding: 0.35rem 0.4rem;
             border-radius: 8px;
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
             font-size: 0.8rem;
             letter-spacing: 1px;
         }
@@ -372,7 +378,7 @@
             background: transparent;
             color: var(--text-strong);
             padding: 0.75rem 1rem;
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
             font-size: 0.9rem;
             letter-spacing: 1px;
             transition: all 0.2s ease;
@@ -447,17 +453,19 @@
         }
 
         /* Canvas ocupa a tela toda */
-        .game-viewport {
+        .game-viewport,
+        .viewport {
             position: absolute;
             inset: 0;
             background: #0b141c;
             overflow: hidden;
-            cursor: default;
+            cursor: url("../src/cursors/cursor.png") 0 0, auto;
             touch-action: none;
         }
 
-        .game-viewport.panning {
-            cursor: grabbing;
+        .game-viewport.panning,
+        .viewport.panning {
+            cursor: url("../src/cursors/hand cursor.png") 0 0, grabbing;
         }
 
         .game-canvas {
@@ -504,7 +512,7 @@
             background: rgba(245, 245, 245, 0.96);
             color: #111111;
             padding: 0.4rem 0.7rem;
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
             font-size: 0.8rem;
             letter-spacing: 0.4px;
         }
@@ -632,7 +640,7 @@
             color: #111111;
             padding: 6px 8px;
             border-radius: 0 6px 6px 0;
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
         }
 
 
@@ -693,7 +701,7 @@
             color: #111111;
             padding: 8px 12px;
             border-radius: 6px 0 0 0;
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
             font-size: 0.8rem;
         }
 
@@ -1608,7 +1616,7 @@
             border: 0;
             background: #2a2a2a;
             color: #e5e5e5;
-            cursor: pointer;
+            cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
             transition: background 0.18s ease;
         }
 
@@ -1653,6 +1661,10 @@
             height: 16px;
             object-fit: contain;
             filter: brightness(0) invert(0.9);
+        }
+
+        .hud-icon.is-colored {
+            filter: none;
         }
 
         .stat-stack {

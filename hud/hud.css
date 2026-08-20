@@ -101,7 +101,7 @@ input {
 }
 
 button {
-  cursor: pointer;
+  cursor: url("../src/cursors/hand cursor.png") 0 0, pointer;
 }
 
 button:focus-visible,
@@ -240,11 +240,6 @@ button:focus-visible,
 .hud-icon {
   display: block;
   object-fit: contain;
-  filter: brightness(0) invert(0.9);
-}
-
-body.theme-light .hud-icon {
-  filter: none;
 }
 
 .stat-value {
